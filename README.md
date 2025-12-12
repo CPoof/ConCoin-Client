@@ -3,3 +3,10 @@ A cryptocurrency with provable randomness. This client formats input. The [backe
 
 ## Requirements
 Unlike the backend, the client only needs Rust.
+
+## How to use
+1. Enter an input
+2. The resulting hash is a combination of BOTH the input and a pepper
+3. Save the secret values to a json file with "s"\
+You can personally encrypt the file if neccesary.
+4. You can now give the original input to your commited hash. 
