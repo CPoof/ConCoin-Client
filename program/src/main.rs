@@ -148,13 +148,18 @@ impl App {
         // Add hash to list of hashes to display
         let pepper= generate_secure_pepper();
         let hashed_input = hash_input_with_pepper(&self.input, &pepper);
-        self.hash.push(hashed_input);
+        self.hash.push(hashed_input.clone());
 
         //Add salt and input to secrets
         let mut combined_pepper_input: String = hex::encode(pepper);
-        combined_pepper_input.push_str(",");
-        combined_pepper_input.push_str(&hex::encode(&self.input));
-        self.secrets.push(vec![combined_pepper_input]);
+        combined_pepper_input.push_str(&hex::encode(&self.input.as_bytes()));
+        self.secrets.push(vec![combined_pepper_input.clone()]);
+
+        // Verify the secrets make a hash that is the same
+        let decoded_bytes: Vec<u8> = hex::decode(combined_pepper_input)
+                                    .expect("Hex decoding failed: input might be invalid or have an odd length");
+        let result = hex::encode(Sha512::digest(decoded_bytes));
+        assert_eq!(result, hashed_input);
 
         self.input.clear();
         self.reset_cursor();
